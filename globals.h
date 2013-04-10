@@ -13,8 +13,11 @@
 #define F_CPU 16000000UL
 #include <util/delay.h>
 
+#define true 	0x01
+#define false	0x00
 
 //Define new datatypes as easier shorthand
+typedef uint8_t		bool;
 typedef uint8_t		u08; //!< Unsigned 8-bit integer, range: 0 to +255
 typedef int8_t		s08; //!< Signed 8-bit integer, range: -128 to +127
 typedef uint16_t	u16; //!< Unsigned 16-bit integer, range: 0 to +65,535

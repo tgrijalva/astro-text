@@ -7,6 +7,8 @@
 #include "lcdLib.h"
 #include "astrotext.h"
 
+void helloWorld();
+
 void setup() {
 	
     // SET PIN MODES
@@ -18,54 +20,52 @@ void setup() {
 	sbi(DDRB, DDB2);
 	
 	lcdInit();
+	lcdCursorStyle(false, false);
 }
 
 int main() {
     setup();
 
-	char *hello = "hello world!";
-	char *mom = "hello your mom!";
 	// main run loop
 	for (;;) {
-		// hello your mom program
-		// u08 i;
-		// for (i = 0; i < 5; i++) {
-		// 	lcdWriteString(hello);
-		// 	_delay_ms(1000);
-		// 	lcdClear();
-		// 	lcdRowTwoHome();
-		// 	lcdWriteString(hello);
-		// 	_delay_ms(1000);
-		// 	lcdClear();
-		// }
-		// lcdWriteString(hello);
-		// _delay_ms(1000);
-		// lcdClear();
-		// lcdRowTwoHome();
-		// lcdWriteString(mom);
-		// _delay_ms(1000);
-		// lcdClear();
+		// hello world program
+		// helloWorld();
 		
-		// astrotext game
+		// Astrotext game
 		Game game;
 		newGame(&game);
-		while(game.status == 1) {
+		while(game.status) {
 			renderFrame(&game);
-			_delay_ms(1000);
-			game.shipLoc = 0x80;
-			renderFrame(&game);
-			_delay_ms(1000);
-			game.shipLoc = 0x00;
 		}
+		
+		// debug 
 		lcdClear();
 		lcdWriteString("not to be seen");
 		_delay_ms(10000);
-		if (game.status == 2) {
-			// win
-			lcdWriteString(hello);
-		} else {
-			// lose
-			lcdWriteString(mom);
-		}
+
 	}
+}
+
+void helloWorld() {
+	
+	char *hello = "hello world!";
+	char *mom = "Your Mom!";
+	
+	u08 i;
+	for (i = 0; i < 5; i++) {
+		lcdWriteString(hello);
+		_delay_ms(1000);
+		lcdClear();
+		lcdRowTwoHome();
+		lcdWriteString(hello);
+		_delay_ms(1000);
+		lcdClear();
+	}
+	lcdWriteString(hello);
+	_delay_ms(1000);
+	lcdClear();
+	lcdRowTwoHome();
+	lcdWriteString(mom);
+	_delay_ms(1000);
+	lcdClear();
 }

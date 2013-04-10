@@ -8,7 +8,6 @@
 
 // init functions
 void lcdInit();
-void lcdInitWithParams();
 
 // read/write functions
 void lcdWrite(u08 c);
@@ -20,6 +19,7 @@ void lcdCmd(u08 c);
 void lcdClear();
 void lcdHome();
 void lcdRowTwoHome();
+void lcdCursorStyle(bool on, bool blink);
 void lcdSetCursor(u08 loc); // use MSB to denote row and bits 4 ~ 0 to denote col
 
 #endif //ifndef LCDLIB_H

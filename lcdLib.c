@@ -24,8 +24,6 @@
 #define DIVISION     0xFD
 #define BLACK_SQUARE 0xFF
 
-u08 getCharCode(char c);
-
 void lcdInit() {
 	_delay_ms(50);
 	lcdCmd(0x3F); // function set
@@ -35,11 +33,6 @@ void lcdInit() {
 	lcdCmd(0x01);
 	_delay_us(3300);
 	lcdCmd(0x06);
-}
-
-void lcdInitWithParams() {
-	_delay_ms(50);
-	
 }
 
 void lcdWrite(u08 c) {
@@ -87,6 +80,17 @@ void lcdHome() {
 
 void lcdRowTwoHome() {
 	lcdCmd(0xC0);
+}
+
+void lcdCursorStyle(bool on, bool blink) {
+	u08 cmd = 0x0C;
+	if (on) {
+		cmd |= 0x02;
+	}
+	if (blink) {
+		cmd |= 0x01;
+	}
+	lcdCmd(cmd);
 }
 
 void lcdSetCursor(u08 loc) {
