@@ -24,7 +24,7 @@ void newGame(Game *game) {
 
 void renderFrame(Game *game) {
 	// create canvas for drawing
-	char	topRow[16] = "                ";
+	char	topRow[16] = 	"                ";
 	char	bottomRow[16] = "                ";
 	
 	// GAME LOGIC
@@ -85,13 +85,22 @@ void frameDelay(Game *game) {
 
 void drawTitle() {
 	char *title = "   Astro-Text   ";
+	lcdClear();
+	lcdWrite(BLACK_SQUARE);
 	u08 i;
+	for (i = 0; i < 16; i++) {
+		_delay_ms(100);
+		lcdDecrementCursor();
+		lcdWrite(title[i]);
+		lcdWrite(BLACK_SQUARE);
+	}
+	_delay_ms(1000);
 	for (i = 0; i < 5; i++) {
 		lcdClear();
+		lcdRowTwoHome();
 		lcdWriteString(title);
 		_delay_ms(1000);
 		lcdClear();
-		lcdRowTwoHome();
 		lcdWriteString(title);
 		_delay_ms(1000);
 	}
