@@ -82,7 +82,7 @@ void lcdClear() {
 }
 
 void lcdHome() {
-	lcdCmd(0x02);
+	lcdCmd(0x80);
 }
 
 void lcdRowTwoHome() {

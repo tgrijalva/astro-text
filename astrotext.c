@@ -41,3 +41,11 @@ void drawShip(Game *game, char *topRow, char *bottomRow) {
 		bottomRow[1] = '>';
 	}
 }
+
+void createAsteroids(Game *game) {
+	
+}
+
+void drawAsteroids(Game *game, char *topRow, char *bottomRow) {
+	
+}
