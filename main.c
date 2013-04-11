@@ -7,16 +7,6 @@
 #include "lcdLib.h"
 #include "astrotext.h"
 
-//
-volatile u16 x = 0;
-ISR(TIMER1_COMPA_vect) {
-	x++;
-	if (x == 20000) {
-		tbi(PORTB, PB5);
-		x = 0;
-	}
-}
-
 void helloWorld();
 
 void setup() {
@@ -42,9 +32,6 @@ void setup() {
 	OCR1A = 99;
 	sbi(TIMSK1, OCIE1A);
 	sei();
-	
-	// temp
-	sbi(DDRB, DDB5);
 	
 	// lcd setup
 	lcdInit();
@@ -98,4 +85,8 @@ void helloWorld() {
 	lcdWriteString(mom);
 	_delay_ms(1000);
 	lcdClear();
+}
+
+ISR(TIMER1_COMPA_vect) {
+	
 }
