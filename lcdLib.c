@@ -15,7 +15,7 @@ void lcdInit() {
 void lcdWrite(u08 c) {
 	// clear control signals
 	sbi(CTLREG, RS);
-	CTLREG &= 0x09;
+	CTLREG &= 0xF9;
 	// set enable
 	sbi(CTLREG, EN);
 	PORTD = c;
@@ -35,7 +35,7 @@ void lcdWriteString(char *str) {
 void lcdCmd(u08 c) {
 	// clear control signals
 	// dont effect PB3
-	CTLREG &= 0x08;
+	CTLREG &= 0xF8;
 	// turn on enable
 	sbi(CTLREG, EN);
 	PORTD = c;

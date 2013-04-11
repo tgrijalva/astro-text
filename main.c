@@ -7,6 +7,16 @@
 #include "lcdLib.h"
 #include "astrotext.h"
 
+//
+volatile u16 x = 0;
+ISR(TIMER1_COMPA_vect) {
+	x++;
+	if (x == 20000) {
+		tbi(PORTB, PB5);
+		x = 0;
+	}
+}
+
 void helloWorld();
 
 void setup() {
@@ -19,13 +29,24 @@ void setup() {
 	sbi(DDRB, DDB1);
 	sbi(DDRB, DDB2);
 	
-	// setup pwm for audio
+	// setup pwm output for audio
 	sbi(DDRB, DDB3);
 	sbi(TCCR2A, COM2A1);
 	sbi(TCCR2A, WGM21);
 	sbi(TCCR2A, WGM20);
 	sbi(TCCR2B, CS20);
 	
+	// setup timer for audio interrupt
+	sbi(TCCR1B, WGM12);
+	sbi(TCCR1B, CS11);
+	OCR1A = 99;
+	sbi(TIMSK1, OCIE1A);
+	sei();
+	
+	// temp
+	sbi(DDRB, DDB5);
+	
+	// lcd setup
 	lcdInit();
 	lcdCursorStyle(false, false);
 }
@@ -52,7 +73,6 @@ int main() {
 		lcdClear();
 		lcdWriteString("not to be seen");
 		_delay_ms(10000);
-
 	}
 }
 
