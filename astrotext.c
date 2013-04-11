@@ -12,7 +12,7 @@ void newGame(Game *game) {
 	// reset game elements
 	game->status = 					1;
 	game->speed = 					5; // FPS
-	game->shipLoc = 				0;
+	game->shipLoc = 				0x10;
 	game->asteroidsTop = 			0;
 	game->asteroidsBottom = 		0;
 	game->userProjectilesTop = 		0;
@@ -94,20 +94,21 @@ void drawTitle() {
 		lcdWrite(title[i]);
 		lcdWrite(BLACK_SQUARE);
 	}
+	_delay_ms(1000);	
+	for (i = 0; i < 17; i++) {
+			lcdRowTwoHome();
+			u08 j;
+			for (j = 0; j < i; j++) {
+				lcdWrite(' ');
+			}
+			lcdWriteString("=>");
+			_delay_ms(100);
+		}
 	_delay_ms(1000);
-	for (i = 0; i < 5; i++) {
-		lcdClear();
-		lcdRowTwoHome();
-		lcdWriteString(title);
-		_delay_ms(1000);
-		lcdClear();
-		lcdWriteString(title);
-		_delay_ms(1000);
-	}
 }
 
 void drawShip(Game *game, char *topRow, char *bottomRow) {
-	if ((game->shipLoc & 0x80) == 0x00) {
+	if ((game->shipLoc & 0x10) == 0x00) {
 		// ship on top row
 		topRow[0] = '=';
 		topRow[1] = '>';

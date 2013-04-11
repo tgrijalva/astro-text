@@ -45,6 +45,8 @@ void lcdRowTwoHome();
 void lcdCursorStyle(bool on, bool blink);
 void lcdIncrementCursor();
 void lcdDecrementCursor();
-void lcdSetCursor(u08 loc); // use MSB to denote row and bits 4 ~ 0 to denote col
+void lcdShiftTextRight();
+void lcdShiftTextLeft();
+void lcdSetCursor(u08 loc); // use bit 4 to denote row and bits 3 ~ 0 to denote col
 
 #endif //ifndef LCDLIB_H

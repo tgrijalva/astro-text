@@ -78,6 +78,19 @@ void lcdDecrementCursor() {
 	lcdCmd(0x10);
 }
 
+void lcdShiftTextRight() {
+	lcdCmd(0x1C);
+}
+
+void lcdShiftTextLeft() {
+	lcdCmd(0x18);
+}
+
 void lcdSetCursor(u08 loc) {
-	
+	u08 cmd = 0x08;
+	if ((loc & 0x10) == 0x10) {	// add 0x40 for row 2
+		cmd |= 0x40;
+	}
+	cmd += (0x1F & loc);
+	lcdCmd(cmd);
 }
