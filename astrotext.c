@@ -1,12 +1,17 @@
 #include "globals.h"
 #include "astrotext.h"
 #include "lcdLib.h"
+#include "audioplayer.h"
 
 void drawTitle();
 void frameDelay(Game *game);
 void drawShip(Game *game, char *topRow, char *bottomRow);
 void win(Game *game);
 void lose(Game *game);
+
+void gameSetup() {
+	audioSetup();
+}
 
 void newGame(Game *game) {
 	// reset game elements
@@ -19,6 +24,7 @@ void newGame(Game *game) {
 	game->userProjectilesBottom = 	0;
 	
 	// show title screen
+	AUDIO_OUT = 0x7F; // replace with start sound function
 	drawTitle();
 }
 

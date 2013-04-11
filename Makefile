@@ -1,5 +1,5 @@
 # C files
-FILES = main.c lcdLib.c astrotext.c
+FILES = main.c lcdLib.c astrotext.c audioplayer.c
 # chip name
 MCU = atmega328p
 # abbreviated chip name

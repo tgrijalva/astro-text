@@ -12,26 +12,14 @@ void helloWorld();
 void setup() {
 	
     // SET PIN MODES
-	// set data bus pins to outputs
+	// set data bus and control signal pins to outputs
 	DDRD = 0xFF;
-	// set control signal pins to outputs
 	sbi(DDRB, DDB0);
 	sbi(DDRB, DDB1);
 	sbi(DDRB, DDB2);
 	
-	// setup pwm output for audio
-	sbi(DDRB, DDB3);
-	sbi(TCCR2A, COM2A1);
-	sbi(TCCR2A, WGM21);
-	sbi(TCCR2A, WGM20);
-	sbi(TCCR2B, CS20);
-	
-	// setup timer for audio interrupt
-	sbi(TCCR1B, WGM12);
-	sbi(TCCR1B, CS11);
-	OCR1A = 99;
-	sbi(TIMSK1, OCIE1A);
-	sei();
+	// game setup
+	gameSetup();
 	
 	// lcd setup
 	lcdInit();
@@ -40,9 +28,6 @@ void setup() {
 
 int main() {
     setup();
-
-	//audio
-	OCR2A = 0x7F;
 
 	// main run loop
 	for (;;) {
@@ -85,8 +70,4 @@ void helloWorld() {
 	lcdWriteString(mom);
 	_delay_ms(1000);
 	lcdClear();
-}
-
-ISR(TIMER1_COMPA_vect) {
-	
 }

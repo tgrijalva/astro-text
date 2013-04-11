@@ -8,5 +8,6 @@ typedef struct {
 	u16		userProjectilesBottom;
 } Game;
 
+void gameSetup(); // call me during setup phase
 void newGame(Game *game);
 void renderFrame(Game *game);
