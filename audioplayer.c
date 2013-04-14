@@ -1,7 +1,7 @@
 #include "globals.h"
 #include "audioplayer.h"
 
-#define NORMAL_VOLUME 50
+#define NORMAL_VOLUME 40
 #define LOUD_VOLUME 128
 #define MAX_VOLUME 255
 
@@ -209,13 +209,13 @@ void nextAudioSample() {
 			case 3: // Some Sound
 				sampleCount++;
 				if (sampleCount < 2500) {
-					squareWave(3);
+					triWave(3);
 				} else if (sampleCount < 5000) {
-					squareWave(4);
+					triWave(4);
 				} else if (sampleCount < 7500) {
 					triWave(5);
 				} else if (sampleCount < 10000) {
-					triWave(10);
+					squareWave(10);
 				} else if (sampleCount < 12500) {
 					squareWave(15);
 				} else if (sampleCount < 15000) {
@@ -261,9 +261,19 @@ void nextAudioSample() {
 					sampleCount = 0;
 				}
 				break;
+				
+			case 4: // start sound
+				sampleCount++;
+				if (sampleCount < 2500) {
+					squareWave(1);
+				} else {
+					trackNumber = 0;
+					sampleCount = 0;
+				}
+				break;
 			
-		default:
-			amplitude = 0;
+			default:
+				amplitude = 0;
 	}
 }
 

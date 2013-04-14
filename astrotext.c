@@ -10,7 +10,17 @@ void win(Game *game);
 void lose(Game *game);
 
 void gameSetup() {
+	// set up audio
 	audioSetup();
+}
+
+void enableButtons() {
+	// turn on PCI
+	sbi(PCICR, PCIE0);
+	sbi(PCICR, PCIE1);
+	sei();
+	sbi(PCMSK0, PCINT4);
+	sbi(PCMSK1, PCINT8);
 }
 
 void newGame(Game *game) {
@@ -24,8 +34,10 @@ void newGame(Game *game) {
 	game->userProjectilesBottom = 	0;
 	
 	// show title screen
-	playTrack(1);
+	playTrack(TITLE_TRACK);
 	drawTitle();
+	enableButtons();
+	playTrack(START_SOUND);
 }
 
 void renderFrame(Game *game) {
@@ -131,4 +143,16 @@ void createAsteroids(Game *game) {
 
 void drawAsteroids(Game *game, char *topRow, char *bottomRow) {
 	
+}
+
+ISR(PCINT0_vect) { // move button pressed
+	lcdClear();
+	lcdWriteString("move");
+	_delay_ms(1000);
+}
+
+ISR(PCINT1_vect) { // shoot button pressed
+	lcdClear();
+	lcdWriteString("shoot");
+	_delay_ms(1000);
 }
