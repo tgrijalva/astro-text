@@ -7,8 +7,6 @@
 #include "lcdLib.h"
 #include "astrotext.h"
 
-void helloWorld();
-
 void setup() {
 	
     // SET PIN MODES
@@ -32,42 +30,16 @@ int main() {
 	// main run loop
 	for (;;) {
 		// hello world program
-		// helloWorld();
-		
-		// Astrotext game
-		Game game;
-		newGame(&game);
-		while(game.status) {
-			renderFrame(&game);
+		lcdClear();
+		lcdWriteString("Hello World!");
+		while( !(gbi(PINB, PINB4) | gbi(PINC, PINC0)) ) {
+			// wait for button press
 		}
 		
-		// debug 
-		lcdClear();
-		lcdWriteString("not to be seen");
-		_delay_ms(10000);
+		// Astrotext game
+		u08 *gameStatus = newGame();
+		while(*gameStatus == 0x01) {
+			renderFrame();
+		}
 	}
-}
-
-void helloWorld() {
-	
-	char *hello = "hello world!";
-	char *mom = "Your Mom!";
-	
-	u08 i;
-	for (i = 0; i < 5; i++) {
-		lcdWriteString(hello);
-		_delay_ms(1000);
-		lcdClear();
-		lcdRowTwoHome();
-		lcdWriteString(hello);
-		_delay_ms(1000);
-		lcdClear();
-	}
-	lcdWriteString(hello);
-	_delay_ms(1000);
-	lcdClear();
-	lcdRowTwoHome();
-	lcdWriteString(mom);
-	_delay_ms(1000);
-	lcdClear();
 }

@@ -3,11 +3,21 @@
 #include "lcdLib.h"
 #include "audioplayer.h"
 
+u08		status; 							// status != 0 is active, status = 0 is inactive
+volatile u08		speed;					// FPS
+volatile u08		shipLoc; 				// location of ships tail
+volatile u16		asteroidsTop;			// bits denote asteroid locations, 1 for asteroid, 0 for no asteroid
+volatile u16		asteroidsBottom;
+volatile u16		userProjectilesTop;
+volatile u16		userProjectilesBottom;
+volatile bool 		movePressed;
+volatile bool 		shootPressed;
+
 void drawTitle();
-void frameDelay(Game *game);
-void drawShip(Game *game, char *topRow, char *bottomRow);
-void win(Game *game);
-void lose(Game *game);
+void frameDelay();
+void drawShip(char *topRow, char *bottomRow);
+void win();
+void lose();
 
 void gameSetup() {
 	// set up audio
@@ -23,24 +33,27 @@ void enableButtons() {
 	sbi(PCMSK1, PCINT8);
 }
 
-void newGame(Game *game) {
+u08* newGame() {
 	// reset game elements
-	game->status = 					1;
-	game->speed = 					5; // FPS
-	game->shipLoc = 				0x10;
-	game->asteroidsTop = 			0;
-	game->asteroidsBottom = 		0;
-	game->userProjectilesTop = 		0;
-	game->userProjectilesBottom = 	0;
+	status = 					1;
+	speed = 					5; // FPS
+	shipLoc = 					0x10;
+	asteroidsTop = 				0;
+	asteroidsBottom = 			0;
+	userProjectilesTop = 		0;
+	userProjectilesBottom = 	0;
+	movePressed = 				false;
+	shootPressed = 				false;
 	
 	// show title screen
 	playTrack(TITLE_TRACK);
 	drawTitle();
-	enableButtons();
 	playTrack(START_SOUND);
+	enableButtons();
+	return &status;
 }
 
-void renderFrame(Game *game) {
+void renderFrame() {
 	// create canvas for drawing
 	char	topRow[16] = 	"                ";
 	char	bottomRow[16] = "                ";
@@ -59,7 +72,7 @@ void renderFrame(Game *game) {
 	// check for collisions
 	
 	// render scene
-	drawShip(game, topRow, bottomRow);
+	drawShip(topRow, bottomRow);
 	
 	// draw frame
 	lcdHome();
@@ -68,11 +81,15 @@ void renderFrame(Game *game) {
 	lcdWriteString(bottomRow);
 	
 	// time delay between frames
-	frameDelay(game);
+	frameDelay();
+	
+	// reset button pressed status
+	movePressed = false;
+	shootPressed = false;
 }
 
-void frameDelay(Game *game) {
-	switch (game->speed) {
+void frameDelay() {
+	switch (speed) {
 		case 5:
 			_delay_ms(200);
 			break;
@@ -125,8 +142,8 @@ void drawTitle() {
 	_delay_ms(1000);
 }
 
-void drawShip(Game *game, char *topRow, char *bottomRow) {
-	if ((game->shipLoc & 0x10) == 0x00) {
+void drawShip(char *topRow, char *bottomRow) {
+	if ((shipLoc & 0x10) == 0x00) {
 		// ship on top row
 		topRow[0] = '=';
 		topRow[1] = '>';
@@ -137,22 +154,23 @@ void drawShip(Game *game, char *topRow, char *bottomRow) {
 	}
 }
 
-void createAsteroids(Game *game) {
+void createAsteroids() {
 	
 }
 
-void drawAsteroids(Game *game, char *topRow, char *bottomRow) {
+void drawAsteroids(char *topRow, char *bottomRow) {
 	
 }
 
 ISR(PCINT0_vect) { // move button pressed
-	lcdClear();
-	lcdWriteString("move");
-	_delay_ms(1000);
+	if (gbi(PINB, PINB4) && !movePressed) {
+		tbi(shipLoc, 4);
+		movePressed = true;
+	}
 }
 
 ISR(PCINT1_vect) { // shoot button pressed
 	lcdClear();
 	lcdWriteString("shoot");
-	_delay_ms(1000);
+	_delay_ms(5);
 }

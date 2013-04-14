@@ -9,7 +9,7 @@
 #include <avr/interrupt.h>   //interrupt support
 #include <stdint.h>
 
-//! CPU speed (10MHz) for timer and delay loop calculations.
+//! CPU speed (16MHz) for timer and delay loop calculations.
 #define F_CPU 16000000UL
 #include <util/delay.h>
 
