@@ -26,9 +26,8 @@ void lcdWrite(u08 c) {
 }
 
 void lcdWriteString(char *str) {
-	char *ptr = str;
-	while(*ptr != 0) {
-		lcdWrite(*ptr++);	
+	while(*str != 0) {
+		lcdWrite(*str++);	
 	}
 }
 

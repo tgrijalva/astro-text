@@ -24,7 +24,7 @@ void newGame(Game *game) {
 	game->userProjectilesBottom = 	0;
 	
 	// show title screen
-	AUDIO_OUT = 0x7F; // replace with start sound function
+	playTrack(1);
 	drawTitle();
 }
 
@@ -95,12 +95,12 @@ void drawTitle() {
 	lcdWrite(BLACK_SQUARE);
 	u08 i;
 	for (i = 0; i < 16; i++) {
-		_delay_ms(100);
+		_delay_ms(40);
 		lcdDecrementCursor();
 		lcdWrite(title[i]);
 		lcdWrite(BLACK_SQUARE);
 	}
-	_delay_ms(1000);	
+	_delay_ms(750);	
 	for (i = 0; i < 17; i++) {
 			lcdRowTwoHome();
 			u08 j;
@@ -108,7 +108,7 @@ void drawTitle() {
 				lcdWrite(' ');
 			}
 			lcdWriteString("=>");
-			_delay_ms(100);
+			_delay_ms(35);
 	}
 	_delay_ms(1000);
 }
