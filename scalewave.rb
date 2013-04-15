@@ -68,6 +68,6 @@ File.open("/Users/tgrijalva/Desktop/CPE\ 329/Projects/Project\ 1/code/sounds/" +
   f.write("}\n\n")
   
   f.write("u08 get" + file_name.capitalize + "Sample(u16 n) {\n")
-  f.write("   return pgm_read_byte_near(&" + file_name + "Samples[n]);\n")
+  f.write("   return pgm_read_byte(&" + file_name + "Samples[n]);\n")
   f.write("}")
 end

@@ -27,12 +27,16 @@ void setup() {
 int main() {
     setup();
 
+	// this string is a hack to fix a major bug
+	// that was occurring after audio files were added using PROGMEM.
+	// how does it work? no one may ever know.
+	lcdWriteString("");
+
 	// main run loop
 	for (;;) {
 		// hello world program
 		lcdClear();
-		char *hello = "Hello World!";
-		lcdWriteString(hello);
+		lcdWriteString("Hello World!");
 		while( !(gbi(PINB, PINB4) | gbi(PINC, PINC0)) ) {
 			// wait for button press
 		}
