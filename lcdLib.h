@@ -6,6 +6,8 @@
 #define RW PORTB1
 #define EN PORTB2
 
+#define SCREEN_WIDTH 16
+
 #define RIGHT_ARROW  0x7E
 #define LEFT_ARROW   0x7F
 #define START_FRAME  0xA2
