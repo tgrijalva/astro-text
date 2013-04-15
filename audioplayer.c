@@ -271,8 +271,8 @@ void nextAudioSample() {
 				break;
 				
 			case LASER_SOUND:
-				if (sampleCount < getLasersoundLength()) {
-					amplitude = getLasersoundSample(sampleCount);
+				if (sampleCount < getLaserSoundLength()) {
+					amplitude = getLaserSoundSample(sampleCount);
 				} else {
 					trackNumber = 0;
 					sampleCount = 0;
