@@ -1,5 +1,6 @@
 #include "globals.h"
 #include "audioplayer.h"
+#include "./sounds/lasersound.h"
 
 #define NORMAL_VOLUME 40
 #define LOUD_VOLUME 128
@@ -93,9 +94,9 @@ void squareWave(u08 dutySize) {
 }
 
 void nextAudioSample() {
+	sampleCount++;
 	switch (trackNumber) {
 		case 1: // Title Music
-			sampleCount++;
 			if (sampleCount < 2500) {
 				triWave(3);
 			} else if (sampleCount < 5000) {
@@ -151,7 +152,6 @@ void nextAudioSample() {
 			break;
 			
 		case 2: // Some Sound
-			sampleCount++;
 			if (sampleCount < 2500) {
 				squareWave(3);
 			} else if (sampleCount < 5000) {
@@ -207,7 +207,6 @@ void nextAudioSample() {
 			break;
 			
 			case 3: // Some Sound
-				sampleCount++;
 				if (sampleCount < 2500) {
 					triWave(3);
 				} else if (sampleCount < 5000) {
@@ -262,10 +261,18 @@ void nextAudioSample() {
 				}
 				break;
 				
-			case 4: // start sound
-				sampleCount++;
+			case START_SOUND:
 				if (sampleCount < 2500) {
 					squareWave(1);
+				} else {
+					trackNumber = 0;
+					sampleCount = 0;
+				}
+				break;
+				
+			case LASER_SOUND:
+				if (sampleCount < getLasersoundLength()) {
+					amplitude = getLasersoundSample(sampleCount);
 				} else {
 					trackNumber = 0;
 					sampleCount = 0;

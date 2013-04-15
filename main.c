@@ -31,14 +31,15 @@ int main() {
 	for (;;) {
 		// hello world program
 		lcdClear();
-		lcdWriteString("Hello World!");
+		char *hello = "Hello World!";
+		lcdWriteString(hello);
 		while( !(gbi(PINB, PINB4) | gbi(PINC, PINC0)) ) {
 			// wait for button press
 		}
 		
 		// Astrotext game
 		u08 *gameStatus = newGame();
-		while(*gameStatus == 0x01) {
+		while(*gameStatus) {
 			renderFrame();
 		}
 	}

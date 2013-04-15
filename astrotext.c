@@ -12,6 +12,7 @@ volatile u16		userProjectilesTop;
 volatile u16		userProjectilesBottom;
 volatile bool 		movePressed;
 volatile bool 		shootPressed;
+volatile bool		userCollided;
 
 void drawTitle();
 void frameDelay();
@@ -44,6 +45,7 @@ u08* newGame() {
 	userProjectilesBottom = 	0;
 	movePressed = 				false;
 	shootPressed = 				false;
+	userCollided =				false;
 	
 	// show title screen
 	playTrack(TITLE_TRACK);
@@ -91,48 +93,14 @@ void renderFrame() {
 	lcdRowTwoHome();
 	lcdWriteString(bottomRow);
 	
+	// play sounds
+	
 	// reset button pressed status
 	movePressed = false;
 	shootPressed = false;
 	
 	// time delay between frames
 	frameDelay();
-}
-
-void frameDelay() {
-	switch (speed) {
-		case 3:
-			_delay_ms(333);
-			break;
-		case 4:
-			_delay_ms(250);
-			break;
-		case 5:
-			_delay_ms(200);
-			break;
-		case 6:
-			_delay_ms(167);
-			break;
-		case 7:
-			_delay_ms(143);
-			break;
-		case 8:
-			_delay_ms(125);
-			break;
-		case 9:
-			_delay_ms(111);
-			break;
-		case 10:
-			_delay_ms(100);
-			break;
-		default:
-			lcdClear();
-			lcdWriteString("game speed");
-			lcdRowTwoHome();
-			lcdWriteString("out of range");
-			_delay_ms(10000);
-			break;
-	}
 }
 
 void drawTitle() {
@@ -204,6 +172,73 @@ void shoot() {
 		} else { // bottom row
 			userProjectilesBottom |= 0x2000;
 		}
+		playTrack(LASER_SOUND);
+	}
+}
+
+void frameDelay() {
+	switch (speed) {
+		case 3:
+			_delay_ms(333);
+			break;
+		case 4:
+			_delay_ms(250);
+			break;
+		case 5:
+			_delay_ms(200);
+			break;
+		case 6:
+			_delay_ms(167);
+			break;
+		case 7:
+			_delay_ms(143);
+			break;
+		case 8:
+			_delay_ms(125);
+			break;
+		case 9:
+			_delay_ms(111);
+			break;
+		case 10:
+			_delay_ms(100);
+			break;
+		case 11:
+			_delay_ms(91);
+			break;
+		case 12:
+			_delay_ms(83);
+			break;
+		case 13:
+			_delay_ms(77);
+			break;
+		case 14:
+			_delay_ms(71);
+			break;
+		case 15:
+			_delay_ms(67);
+			break;
+		case 16:
+			_delay_ms(63);
+			break;
+		case 17:
+			_delay_ms(59);
+			break;
+		case 18:
+			_delay_ms(56);
+			break;
+		case 19:
+			_delay_ms(53);
+			break;
+		case 20:
+			_delay_ms(50);
+			break;
+		default:
+			lcdClear();
+			lcdWriteString("game speed");
+			lcdRowTwoHome();
+			lcdWriteString("out of range");
+			_delay_ms(10000);
+			break;
 	}
 }
 
