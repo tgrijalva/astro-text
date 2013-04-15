@@ -67,6 +67,7 @@ void renderFrame() {
 	// move user
 	if (movePressed) {
 		tbi(shipLoc, 4); // move ship
+		playTrack(CRASH_SOUND);
 	}
 	// move user projectiles
 	userProjectilesTop = (userProjectilesTop >> 1);

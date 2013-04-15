@@ -1,6 +1,7 @@
 #include "globals.h"
 #include "audioplayer.h"
 #include "./sounds/lasersound.h"
+#include "./sounds/crashsound.h"
 
 #define NORMAL_VOLUME 40
 #define LOUD_VOLUME 128
@@ -96,117 +97,7 @@ void squareWave(u08 dutySize) {
 void nextAudioSample() {
 	sampleCount++;
 	switch (trackNumber) {
-		case 1: // Title Music
-			if (sampleCount < 2500) {
-				triWave(3);
-			} else if (sampleCount < 5000) {
-				triWave(4);
-			} else if (sampleCount < 7500) {
-				triWave(5);
-			} else if (sampleCount < 10000) {
-				triWave(10);
-			} else if (sampleCount < 12500) {
-				triWave(15);
-			} else if (sampleCount < 15000) {
-				triWave(20);
-			} else if (sampleCount < 17500) {
-				triWave(25);
-			} else if (sampleCount < 20000) {
-				triWave(8);
-			} else if (sampleCount < 22500) {
-				triWave(16);
-			} else if (sampleCount < 25000) {
-				triWave(10);
-			} else if (sampleCount < 27500) {
-				triWave(5);
-			} else if (sampleCount < 30000) {
-				triWave(12);
-			} else if (sampleCount < 32500) {
-				triWave(7);
-			} else if (sampleCount < 35000) {
-				triWave(4);
-			} else if (sampleCount < 37500) {
-				triWave(8);
-			} else if (sampleCount < 40000) {
-				triWave(10);
-			} else if (sampleCount < 42500) {
-				triWave(5);
-			} else if (sampleCount < 45000) {
-				triWave(20);
-			} else if (sampleCount < 47500) {
-				triWave(15);
-			} else if (sampleCount < 50000) {
-				triWave(10);
-			} else if (sampleCount < 52500) {
-				triWave(5);
-			} else if (sampleCount < 55000) {
-				triWave(4);
-			} else if (sampleCount < 57500) {
-				triWave(2);
-			} else if (sampleCount < 60000) {
-				triWave(1);
-			} else {
-				trackNumber = 2;
-				sampleCount = 0;
-			}
-			break;
-			
-		case 2: // Some Sound
-			if (sampleCount < 2500) {
-				squareWave(3);
-			} else if (sampleCount < 5000) {
-				squareWave(4);
-			} else if (sampleCount < 7500) {
-				squareWave(5);
-			} else if (sampleCount < 10000) {
-				squareWave(10);
-			} else if (sampleCount < 12500) {
-				squareWave(15);
-			} else if (sampleCount < 15000) {
-				squareWave(20);
-			} else if (sampleCount < 17500) {
-				squareWave(25);
-			} else if (sampleCount < 20000) {
-				squareWave(8);
-			} else if (sampleCount < 22500) {
-				squareWave(16);
-			} else if (sampleCount < 25000) {
-				squareWave(10);
-			} else if (sampleCount < 27500) {
-				squareWave(5);
-			} else if (sampleCount < 30000) {
-				squareWave(12);
-			} else if (sampleCount < 32500) {
-				squareWave(7);
-			} else if (sampleCount < 35000) {
-				squareWave(4);
-			} else if (sampleCount < 37500) {
-				squareWave(8);
-			} else if (sampleCount < 40000) {
-				squareWave(10);
-			} else if (sampleCount < 42500) {
-				squareWave(5);
-			} else if (sampleCount < 45000) {
-				squareWave(20);
-			} else if (sampleCount < 47500) {
-				squareWave(15);
-			} else if (sampleCount < 50000) {
-				squareWave(10);
-			} else if (sampleCount < 52500) {
-				squareWave(5);
-			} else if (sampleCount < 55000) {
-				squareWave(4);
-			} else if (sampleCount < 57500) {
-				squareWave(2);
-			} else if (sampleCount < 60000) {
-				squareWave(1);
-			} else {
-				trackNumber = 3;
-				sampleCount = 0;
-			}
-			break;
-			
-			case 3: // Some Sound
+			case TITLE_TRACK:
 				if (sampleCount < 2500) {
 					triWave(3);
 				} else if (sampleCount < 5000) {
@@ -273,6 +164,15 @@ void nextAudioSample() {
 			case LASER_SOUND:
 				if (sampleCount < getLaserSoundLength()) {
 					amplitude = getLaserSoundSample(sampleCount);
+				} else {
+					trackNumber = 0;
+					sampleCount = 0;
+				}
+				break;
+				
+			case CRASH_SOUND:
+				if (sampleCount < getCrashSoundLength()) {
+					amplitude = getCrashSoundSample(sampleCount);
 				} else {
 					trackNumber = 0;
 					sampleCount = 0;
