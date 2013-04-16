@@ -130,6 +130,7 @@ void renderFrame() {
 	// check for powerUp
 	if ((powerUpsTop & 0xC000) && !(shipLoc & 0x10)) {
 		powerUp = 50;
+		powerUpsTop = 0;
 	}
 	
 	// render scene
@@ -150,12 +151,13 @@ void renderFrame() {
 		lcdSetCursor(0x05);
 		lcdWriteString("FAIL!!");
 		playTrack(FAIL_SOUND);
-		_delay_ms(2000);
-		lcdSetCursor(0x12);
-		lcdWriteString("SCORE:0");
+		_delay_ms(1500);
 		printScore();
 		_delay_ms(3000);
 		return;
+	} else if (powerUp == 50) {
+		playTrack(POWERUP_SOUND);
+		_delay_ms(300);
 	} else if (destroyedAsteroidsTop | destroyedAsteroidsBottom) {
 		playTrack(HIT_SOUND);
 	}
@@ -348,8 +350,15 @@ void checkAsteroidCollisions() {
 }
 
 void printScore() {
-	lcdWrite((score / 10000) + 48);
-	score %= 10000;
+	if ((score / 10000) > 0) {
+		lcdSetCursor(0x12);
+		lcdWriteString("SCORE:0");
+		lcdWrite((score / 10000) + 48);
+		score %= 10000;
+	} else {
+		lcdSetCursor(0x13);
+		lcdWriteString("SCORE:");
+	}
 	lcdWrite((score / 1000) + 48);
 	score %= 1000;
 	lcdWrite((score / 100) + 48);

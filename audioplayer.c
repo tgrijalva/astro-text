@@ -4,6 +4,7 @@
 #include "./sounds/crashsound.h"
 #include "./sounds/failsound.h"
 #include "./sounds/hitsound.h"
+#include "./sounds/powerupsound.h"
 
 #define NORMAL_VOLUME 40
 #define LOUD_VOLUME 128
@@ -193,6 +194,14 @@ void nextAudioSample() {
 			case HIT_SOUND:
 				if (sampleCount < getHitSoundLength()) {
 					amplitude = getHitSoundSample(sampleCount);
+				} else {
+					trackNumber = 0;
+					sampleCount = 0;
+				}
+				break;
+			case POWERUP_SOUND:
+				if (sampleCount < getPowerupSoundLength()) {
+					amplitude = getPowerupSoundSample(sampleCount);
 				} else {
 					trackNumber = 0;
 					sampleCount = 0;

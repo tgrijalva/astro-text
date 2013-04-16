@@ -3,12 +3,13 @@
 
 #define AUDIO_OUT OCR2A
 
-#define TITLE_TRACK 1
-#define START_SOUND 2
-#define LASER_SOUND 3
-#define CRASH_SOUND 4
-#define FAIL_SOUND  5
-#define HIT_SOUND	6
+#define TITLE_TRACK 	1
+#define START_SOUND 	2
+#define LASER_SOUND 	3
+#define CRASH_SOUND 	4
+#define FAIL_SOUND  	5
+#define HIT_SOUND		6
+#define POWERUP_SOUND	7
 
 void audioSetup(); // call during setup
 void playTrack(u08 trackNum);
