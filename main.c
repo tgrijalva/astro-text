@@ -37,6 +37,7 @@ int main() {
 		// hello world program
 		lcdClear();
 		lcdWriteString("Hello World!");
+		_delay_ms(500);
 		while( !(gbi(PINB, PINB4) | gbi(PINC, PINC0)) ) {
 			// wait for button press
 		}
@@ -45,6 +46,9 @@ int main() {
 		bool *gameStatus = newGame();
 		while(*gameStatus) {
 			renderFrame();
+		}
+		while( !(gbi(PINB, PINB4) | gbi(PINC, PINC0)) ) {
+			// wait for button press
 		}
 	}
 }

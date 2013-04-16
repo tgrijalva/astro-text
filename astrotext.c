@@ -159,7 +159,6 @@ void renderFrame() {
 		playTrack(FAIL_SOUND);
 		_delay_ms(1500);
 		printScore();
-		_delay_ms(3000);
 		return;
 	} else if (powerUp == 50) {
 		playTrack(POWERUP_SOUND);
