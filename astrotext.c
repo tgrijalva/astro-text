@@ -286,6 +286,7 @@ void createAsteroids() {
 		if ((powerUpTimer == POWERUP_TIME_1 + 1) || (powerUpTimer == POWERUP_TIME_1 + 2) || (powerUpTimer == POWERUP_TIME_1 + 3)) {
 			// dont place asteroid directly behind powerup
 				asteroidsBottom |= 1;
+				return;
 		}
 		
 		u08 topCount = countBits(asteroidsTop);
