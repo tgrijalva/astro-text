@@ -2,7 +2,7 @@
 #define ASTROTEXT_H
 
 void gameSetup(); // call me during setup phase
-u08* newGame();
+bool* newGame();
 void renderFrame();
 
 #endif //ifndef ASTROTEXT_H

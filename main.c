@@ -42,7 +42,7 @@ int main() {
 		}
 		
 		// Astrotext game
-		u08 *gameStatus = newGame();
+		bool *gameStatus = newGame();
 		while(*gameStatus) {
 			renderFrame();
 		}

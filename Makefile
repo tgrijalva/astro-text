@@ -1,5 +1,5 @@
 # C files
-FILES = main.c lcdLib.c astrotext.c audioplayer.c ./sounds/lasersound.c ./sounds/crashsound.c
+FILES = main.c lcdLib.c astrotext.c audioplayer.c ./sounds/lasersound.c ./sounds/crashsound.c ./sounds/failsound.c
 # chip name
 MCU = atmega328p
 # abbreviated chip name

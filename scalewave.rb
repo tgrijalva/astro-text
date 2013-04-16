@@ -4,9 +4,9 @@ require "/Users/tgrijalva/Code/Ruby/Ruby\ Applications/signals_framework/signals
 
 # parameters
 # the sound file for converting
-sound_file = "/Users/tgrijalva/Desktop/CPE\ 329/Projects/Project\ 1/sounds/laser.wav"
+sound_file = "/Users/tgrijalva/Desktop/CPE\ 329/Projects/Project\ 1/sounds/fail.wav"
 # volume scale factor must be equal or less than 1.0
-volume_scale = 0.60
+volume_scale = 1.00
 
 #  program start here
 # create file name
@@ -24,12 +24,12 @@ bit = 's*' if format.bitPerSample == 16 # int16_t
 bit = 'c*' if format.bitPerSample == 8 # signed char
 wavs = dataChunk.data.unpack(bit) # read binary
 
-# convert to 8 bit unsigned
+# convert to 8-bit unsigned
 if (format.bitPerSample == 16)
-  puts "converting to 8 bit"
+  puts "converting to 8-bit"
   wavs.map! {|sample| (sample + 32768) >> 8}
 elsif (format.bitPerSample == 8)
-  puts "converting 8bits to unsigned"
+  puts "converting 8-bits to unsigned"
   wavs.map! {|sample| (sample + 128)}
 end
 

@@ -3,11 +3,13 @@
 #include "lcdLib.h"
 #include "audioplayer.h"
 
-u08		status; 							// status != 0 is active, status = 0 is inactive
+bool				status; 				// status != 0 is active, status = 0 is inactive
 volatile u08		speed;					// FPS
 volatile u08		shipLoc; 				// location of ships tail
 volatile u16		asteroidsTop;			// bits denote asteroid locations, 1 for asteroid, 0 for no asteroid
 volatile u16		asteroidsBottom;
+volatile u16		destroyedAsteroidsTop;
+volatile u16		destroyedAsteroidsBottom;
 volatile u16		userProjectilesTop;
 volatile u16		userProjectilesBottom;
 volatile bool 		movePressed;
@@ -34,7 +36,12 @@ void enableButtons() {
 	sbi(PCMSK1, PCINT8);
 }
 
-u08* newGame() {
+void disableButtons() {
+	cbi(PCICR, PCIE0);
+	cbi(PCICR, PCIE1);
+}
+
+bool* newGame() {
 	// reset game elements
 	status = 					1;
 	speed = 					9; // FPS
@@ -43,6 +50,8 @@ u08* newGame() {
 	asteroidsBottom = 			0;
 	userProjectilesTop = 		0;
 	userProjectilesBottom = 	0;
+	destroyedAsteroidsTop = 		0;
+	destroyedAsteroidsBottom = 	0;
 	movePressed = 				false;
 	shootPressed = 				false;
 	userCollided =				false;
@@ -154,7 +163,8 @@ void drawScene(char *topRow, char *bottomRow) {
 	loopDraw(bottomRow, userProjectilesBottom, '-');
 	
 	// draw asteroids
-	
+	loopDraw(topRow, asteroidsTop, BLACK_SQUARE);
+	loopDraw(bottomRow, asteroidsBottom, BLACK_SQUARE);
 }
 
 void createAsteroids() {
