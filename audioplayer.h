@@ -8,6 +8,7 @@
 #define LASER_SOUND 3
 #define CRASH_SOUND 4
 #define FAIL_SOUND  5
+#define HIT_SOUND	6
 
 void audioSetup(); // call during setup
 void playTrack(u08 trackNum);

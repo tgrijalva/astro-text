@@ -43,14 +43,14 @@ void disableButtons() {
 
 bool* newGame() {
 	// reset game elements
-	status = 					1;
+	status = 					true;
 	speed = 					9; // FPS
 	shipLoc = 					0x10;
 	asteroidsTop = 				0;
 	asteroidsBottom = 			0;
 	userProjectilesTop = 		0;
 	userProjectilesBottom = 	0;
-	destroyedAsteroidsTop = 		0;
+	destroyedAsteroidsTop = 	0;
 	destroyedAsteroidsBottom = 	0;
 	movePressed = 				false;
 	shootPressed = 				false;
@@ -66,6 +66,7 @@ bool* newGame() {
 
 void shoot();
 void createAsteroids();
+void checkCollisions();
 
 void renderFrame() {
 	// create canvas for drawing
@@ -76,23 +77,31 @@ void renderFrame() {
 	// move user
 	if (movePressed) {
 		tbi(shipLoc, 4); // move ship
-		playTrack(CRASH_SOUND);
 	}
+	
 	// move user projectiles
 	userProjectilesTop = (userProjectilesTop >> 1);
 	userProjectilesBottom = (userProjectilesBottom >> 1);
+	
 	// create new user projectiles
 	if (shootPressed) {
 		shoot();
 	}
+	
 	// check for collisions
+	checkCollisions();
 	
 	// move asteroids and enemy projectiles
+	asteroidsTop = (asteroidsTop << 1);
+	asteroidsBottom = (asteroidsBottom << 1);
+	destroyedAsteroidsTop = (destroyedAsteroidsTop << 1);
+	destroyedAsteroidsBottom = (destroyedAsteroidsBottom << 1);
 	
 	// create new asteroids and enemy projectiles
 	createAsteroids();
 	
 	// check for collisions
+	checkCollisions();
 	
 	// render scene
 	drawScene(topRow, bottomRow);
@@ -103,7 +112,22 @@ void renderFrame() {
 	lcdRowTwoHome();
 	lcdWriteString(bottomRow);
 	
-	// play sounds
+	// act on collisions
+	if (userCollided) {
+		disableButtons();
+		status = false;
+		playTrack(CRASH_SOUND);
+		_delay_ms(2500);
+		lcdSetCursor(0x05);
+		lcdWriteString("FAIL!!");
+		playTrack(FAIL_SOUND);
+		_delay_ms(5000);
+		return;
+	} else if (destroyedAsteroidsTop | destroyedAsteroidsBottom) {
+		playTrack(HIT_SOUND);
+	} else {
+		
+	}
 	
 	// reset button pressed status
 	movePressed = false;
@@ -158,22 +182,32 @@ void drawScene(char *topRow, char *bottomRow) {
 		bottomRow[1] = '>';
 	}
 	
-	// draw projectiles
+	// draw user projectiles
 	loopDraw(topRow, userProjectilesTop, '-');
 	loopDraw(bottomRow, userProjectilesBottom, '-');
 	
 	// draw asteroids
 	loopDraw(topRow, asteroidsTop, BLACK_SQUARE);
 	loopDraw(bottomRow, asteroidsBottom, BLACK_SQUARE);
+	
+	// draw collided asteroids
+	loopDraw(topRow, destroyedAsteroidsTop, 'X');
+	loopDraw(bottomRow, destroyedAsteroidsBottom, 'X');
 }
 
 void createAsteroids() {
-	// top row
-	
-	asteroidsTop |= 0;
-	// bottom row
-	
-	asteroidsBottom |= 0;
+	u16 asteroidLogicBool = asteroidsTop ^ asteroidsBottom ^ userProjectilesTop ^ userProjectilesBottom;
+	// pattern chooser
+	if (!asteroidLogicBool) {
+		asteroidsBottom |= 1;
+	} else if (gbi(asteroidLogicBool, 3)) {
+		asteroidsTop |= 1;
+	} else if (gbi(asteroidLogicBool, 7)) {
+		asteroidsBottom |= 1;
+	} else if (gbi(asteroidLogicBool, 12)) {
+		asteroidsTop |= 1;
+		asteroidsBottom |= 1;
+	}
 }
 
 void shoot() {
@@ -185,6 +219,31 @@ void shoot() {
 		}
 		playTrack(LASER_SOUND);
 	}
+}
+
+void checkCollisions() {
+	// check user asteroid collision
+	if (shipLoc & 0x10) {	// ship on bottom
+		if ( (asteroidsBottom | destroyedAsteroidsBottom) & 0xC000) {
+			userCollided = true;
+		}
+	} else { 				// ship on top
+		if ( (asteroidsTop | destroyedAsteroidsTop) & 0xC000) {
+			userCollided = true;
+		}
+	}
+	// check for laser asteroid collisions
+	u16 collideBoolTop = userProjectilesTop & asteroidsTop;
+	u16 collideBoolBottom = userProjectilesBottom & asteroidsBottom;
+	// destroy asteroids
+	destroyedAsteroidsTop |= collideBoolTop;
+	destroyedAsteroidsBottom |= collideBoolBottom;
+	// remove live asteroids
+	asteroidsTop &= ~collideBoolTop;
+	asteroidsBottom &= ~collideBoolBottom;
+	// remove collided lasers
+	userProjectilesTop &= ~collideBoolTop;
+	userProjectilesBottom &= ~collideBoolBottom;
 }
 
 void frameDelay() {

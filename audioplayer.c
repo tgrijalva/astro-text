@@ -3,6 +3,7 @@
 #include "./sounds/lasersound.h"
 #include "./sounds/crashsound.h"
 #include "./sounds/failsound.h"
+#include "./sounds/hitsound.h"
 
 #define NORMAL_VOLUME 40
 #define LOUD_VOLUME 128
@@ -183,6 +184,15 @@ void nextAudioSample() {
 			case FAIL_SOUND:
 				if (sampleCount < getFailSoundLength()) {
 					amplitude = getFailSoundSample(sampleCount);
+				} else {
+					trackNumber = 0;
+					sampleCount = 0;
+				}
+				break;
+				
+			case HIT_SOUND:
+				if (sampleCount < getHitSoundLength()) {
+					amplitude = getHitSoundSample(sampleCount);
 				} else {
 					trackNumber = 0;
 					sampleCount = 0;

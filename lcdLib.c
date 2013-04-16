@@ -86,10 +86,10 @@ void lcdShiftTextLeft() {
 }
 
 void lcdSetCursor(u08 loc) {
-	u08 cmd = 0x08;
-	if ((loc & 0x10) == 0x10) {	// add 0x40 for row 2
+	u08 cmd = 0x80;
+	if (loc & 0x10) {	// add 0x40 for row 2
 		cmd |= 0x40;
 	}
-	cmd += (0x1F & loc);
+	cmd += (0x0F & loc);
 	lcdCmd(cmd);
 }

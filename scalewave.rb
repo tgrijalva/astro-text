@@ -4,7 +4,7 @@ require "/Users/tgrijalva/Code/Ruby/Ruby\ Applications/signals_framework/signals
 
 # parameters
 # the sound file for converting
-sound_file = "/Users/tgrijalva/Desktop/CPE\ 329/Projects/Project\ 1/sounds/fail.wav"
+sound_file = "/Users/tgrijalva/Desktop/CPE\ 329/Projects/Project\ 1/sounds/hit.wav"
 # volume scale factor must be equal or less than 1.0
 volume_scale = 1.00
 
