@@ -3,6 +3,9 @@
 #include "lcdLib.h"
 #include "audioplayer.h"
 
+#define DEFAULT_GAME_SPEED 	9 				// FPS
+#define POWERUP_TIME_1 		25
+
 bool				status; 				// status != 0 is active, status = 0 is inactive
 volatile u08		speed;					// FPS
 volatile u08		shipLoc; 				// location of ships tail
@@ -18,6 +21,8 @@ volatile bool 		shootPressed;
 volatile bool		userCollided;
 volatile bool		powerUp;
 volatile u08		powerUpTimer;
+volatile u08		shootTimer;
+volatile u16		score;
 
 void drawTitle();
 void frameDelay();
@@ -47,7 +52,7 @@ void disableButtons() {
 bool* newGame() {
 	// reset game elements
 	status = 					true;
-	speed = 					9; // FPS
+	speed = 					DEFAULT_GAME_SPEED;
 	shipLoc = 					0x10;
 	asteroidsTop = 				0;
 	asteroidsBottom = 			0;
@@ -57,6 +62,8 @@ bool* newGame() {
 	destroyedAsteroidsBottom = 	0;
 	powerUpTimer = 				0;
 	powerUpsTop = 				0;
+	shootTimer = 				0;
+	score =						0;
 	movePressed = 				false;
 	shootPressed = 				false;
 	userCollided =				false;
@@ -72,10 +79,11 @@ bool* newGame() {
 
 void shoot();
 void createAsteroids();
-void checkCollisions();
+void checkAsteroidCollisions();
+void checkShipCollisions();
+void printScore();
 
 void renderFrame() {
-	powerUpTimer++;
 	// create canvas for drawing
 	char	topRow[SCREEN_WIDTH] = 		"                ";
 	char	bottomRow[SCREEN_WIDTH] = 	"                ";
@@ -92,8 +100,9 @@ void renderFrame() {
 	
 	// create new user projectiles
 	if (shootPressed) {
-		if ( !((userProjectilesTop | userProjectilesBottom) & 0xF800) ) {
+		if (!shootTimer) {
 			shoot();
+			shootTimer = 3;
 		}
 	}
 	if (powerUp) {
@@ -101,8 +110,8 @@ void renderFrame() {
 		powerUp--;
 	}
 	
-	// check for collisions
-	checkCollisions();
+	// check for Asteroid collisions
+	checkAsteroidCollisions();
 	
 	// move asteroids and enemy projectiles
 	powerUpsTop = (powerUpsTop << 1);
@@ -115,7 +124,8 @@ void renderFrame() {
 	createAsteroids();
 	
 	// check for collisions
-	checkCollisions();
+	checkAsteroidCollisions();
+	checkShipCollisions();
 	
 	// check for powerUp
 	if ((powerUpsTop & 0xC000) && !(shipLoc & 0x10)) {
@@ -140,7 +150,11 @@ void renderFrame() {
 		lcdSetCursor(0x05);
 		lcdWriteString("FAIL!!");
 		playTrack(FAIL_SOUND);
-		_delay_ms(5000);
+		_delay_ms(2000);
+		lcdSetCursor(0x12);
+		lcdWriteString("SCORE:0");
+		printScore();
+		_delay_ms(3000);
 		return;
 	} else if (destroyedAsteroidsTop | destroyedAsteroidsBottom) {
 		playTrack(HIT_SOUND);
@@ -153,6 +167,40 @@ void renderFrame() {
 	movePressed = false;
 	shootPressed = false;
 	
+	// increment timers
+	score++;
+	powerUpTimer++;
+	if (shootTimer) {
+		shootTimer--;
+	}
+	
+	// increase game speed if score is high enough
+	if (score > 50) {
+		speed = DEFAULT_GAME_SPEED + 1;
+	} else if (score > 100) {
+		speed = DEFAULT_GAME_SPEED + 2;
+	} else if (score > 150) {
+		speed = DEFAULT_GAME_SPEED + 3;
+	} else if (score > 200) {
+		speed = DEFAULT_GAME_SPEED + 4;
+	} else if (score > 250) {
+		speed = DEFAULT_GAME_SPEED + 5;
+	} else if (score > 300) {
+		speed = DEFAULT_GAME_SPEED + 6;
+	} else if (score > 350) {
+		speed = DEFAULT_GAME_SPEED + 7;
+	} else if (score > 400) {
+		speed = DEFAULT_GAME_SPEED + 8;
+	} else if (score > 450) {
+		speed = DEFAULT_GAME_SPEED + 9;
+	} else if (score > 500) {
+		speed = DEFAULT_GAME_SPEED + 10;
+	} else if (score > 550) {
+		speed = DEFAULT_GAME_SPEED + 11;
+	} else if (score > 600) {
+		speed = DEFAULT_GAME_SPEED + 12;
+	}
+
 	// time delay between frames
 	frameDelay();
 }
@@ -220,21 +268,41 @@ void drawScene(char *topRow, char *bottomRow) {
 	}
 }
 
+u08 countBits(u16 bools) {
+	u08 count = 0;
+	u08 i;
+	for (i = 0; i < 16; i++) {
+		if ((bools >> i) & 0x0001) {
+			count++;
+		}
+	}
+	return count;
+}
+
 void createAsteroids() {
-	if (powerUpTimer == 25 || powerUpTimer == 175) {
+	if (powerUpTimer == POWERUP_TIME_1) {
 		powerUpsTop |= 1;
-	} else {
-		u16 asteroidLogicBool = (asteroidsTop | asteroidsBottom) ^ (userProjectilesTop | userProjectilesBottom);
+	} else if (!((asteroidsTop | asteroidsBottom) & 0x0007)) {
+		if ((powerUpTimer == POWERUP_TIME_1 + 1) || (powerUpTimer == POWERUP_TIME_1 + 2) || (powerUpTimer == POWERUP_TIME_1 + 3)) {
+			// dont place asteroid directly behind powerup
+				asteroidsBottom |= 1;
+		}
+		
+		u08 topCount = countBits(asteroidsTop);
+		u08 bottomCount = countBits(asteroidsBottom);
 		// pattern chooser
+		u16 asteroidLogicBool = (asteroidsTop | asteroidsBottom) ^ (userProjectilesTop | userProjectilesBottom);
 		if (!asteroidLogicBool) {
-			asteroidsBottom |= 1;
-		} else if (gbi(asteroidLogicBool, 3)) {
-			asteroidsTop |= 1;
-		} else if (gbi(asteroidLogicBool, 7)) {
 			asteroidsBottom |= 1;
 		} else if (gbi(asteroidLogicBool, 13)) {
 			asteroidsTop |= 1;
 			asteroidsBottom |= 1;
+		} else if (topCount < bottomCount) {
+			asteroidsTop |= 1;
+		} else if (topCount > bottomCount) {
+			asteroidsBottom |= 1;
+		} else {
+			asteroidsTop |= 1;
 		}
 	}
 }
@@ -248,7 +316,7 @@ void shoot() {
 	playTrack(LASER_SOUND);
 }
 
-void checkCollisions() {
+void checkShipCollisions() {
 	// check user asteroid collision
 	if (shipLoc & 0x10) {	// ship on bottom
 		if ( (asteroidsBottom | destroyedAsteroidsBottom) & 0xC000) {
@@ -259,9 +327,14 @@ void checkCollisions() {
 			userCollided = true;
 		}
 	}
+}
+
+void checkAsteroidCollisions() {
 	// check for laser asteroid collisions
 	u16 collideBoolTop = userProjectilesTop & asteroidsTop;
 	u16 collideBoolBottom = userProjectilesBottom & asteroidsBottom;
+	score += countBits(collideBoolTop);
+	score += countBits(collideBoolBottom);
 	// destroy asteroids
 	destroyedAsteroidsTop |= collideBoolTop;
 	destroyedAsteroidsBottom |= collideBoolBottom;
@@ -271,6 +344,18 @@ void checkCollisions() {
 	// remove collided lasers
 	userProjectilesTop &= ~collideBoolTop;
 	userProjectilesBottom &= ~collideBoolBottom;
+}
+
+void printScore() {
+	lcdWrite((score / 10000) + 48);
+	score %= 10000;
+	lcdWrite((score / 1000) + 48);
+	score %= 1000;
+	lcdWrite((score / 100) + 48);
+	score %= 100;
+	lcdWrite((score / 10) + 48);
+	score %= 10;
+	lcdWrite(score + 48);
 }
 
 void frameDelay() {
@@ -330,11 +415,7 @@ void frameDelay() {
 			_delay_ms(50);
 			break;
 		default:
-			lcdClear();
-			lcdWriteString("game speed");
-			lcdRowTwoHome();
-			lcdWriteString("out of range");
-			_delay_ms(10000);
+			_delay_ms(1);
 			break;
 	}
 }
