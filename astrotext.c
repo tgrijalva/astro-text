@@ -4,7 +4,7 @@
 #include "audioplayer.h"
 
 #define DEFAULT_GAME_SPEED 	9 				// FPS
-#define POWERUP_TIME_1 		25
+#define POWERUP_TIME_1 		55
 
 bool				status; 				// status != 0 is active, status = 0 is inactive
 volatile u08		speed;					// FPS
@@ -73,6 +73,12 @@ bool* newGame() {
 	playTrack(TITLE_TRACK);
 	drawTitle();
 	playTrack(START_SOUND);
+	
+	// secret code
+	if (gbi(PINB, PINB4) && gbi(PINC, PINC0)) {
+		powerUp = 50;
+	}
+	
 	enableButtons();
 	return &status;
 }
@@ -147,7 +153,7 @@ void renderFrame() {
 		disableButtons();
 		status = false;
 		playTrack(CRASH_SOUND);
-		_delay_ms(2500);
+		_delay_ms(2000);
 		lcdSetCursor(0x05);
 		lcdWriteString("FAIL!!");
 		playTrack(FAIL_SOUND);
