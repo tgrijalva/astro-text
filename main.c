@@ -1,6 +1,5 @@
-/* Project 1
- * CPE 329
- * Timothy Grijalva
+/* 
+ * Coded by Timothy Grijalva
  */
 
 #include "globals.h"
