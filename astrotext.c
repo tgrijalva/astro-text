@@ -109,7 +109,7 @@ void renderFrame() {
 	if (shootPressed) {
 		if (!shootTimer) {
 			shoot();
-			shootTimer = 3;
+			shootTimer = 4;
 		}
 	}
 	if (powerUp) {
