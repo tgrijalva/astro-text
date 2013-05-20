@@ -15,10 +15,12 @@ ARGV.each do |a|
     # volume scale factor must be equal or less than 1.0
     volume_scale = 1.00
 
-    #  program start here
+    # program start here
     # create file name
     file_name = sound_file.split('/').last.split('.').first + "Sound"
     puts file_name
+    # save original path
+    file_path = sound_file.split('/')[0...-1].join('/') + '/'
 
     f = open(sound_file)
     format = WavFile::readFormat(f)
@@ -57,7 +59,7 @@ ARGV.each do |a|
 
 
     # create header file
-    File.open("./sounds/" + file_name.downcase + ".h", 'w') do |f|
+    File.open(file_path + file_name.downcase + ".h", 'w') do |f|
       # header
       f.write("#ifndef " + file_name.upcase + "_H\n")
       f.write("#define " + file_name.upcase + "_H\n\n")
@@ -73,7 +75,7 @@ ARGV.each do |a|
     end
 
     #  create implemetation file
-    File.open("./sounds/" + file_name.downcase + ".c", 'w') do |f|
+    File.open(file_path + file_name.downcase + ".c", 'w') do |f|
       # header
       f.write("#include \"../globals.h\"\n")
       f.write("#include \"" + file_name.downcase + ".h\"\n\n")
