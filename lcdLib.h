@@ -1,10 +1,16 @@
 #ifndef LCDLIB_H
 #define LCDLIB_H
 
-#define CTLREG PORTB
+#define CTLPORT PORTB
+#define CTLREG DDRB
 #define RS PORTB0
 #define RW PORTB1
 #define EN PORTB2
+
+#define DATAREG DDRD
+#define DATAPORT PORTD
+
+
 
 #define SCREEN_WIDTH 16
 
@@ -35,12 +41,12 @@
 void lcdInit();
 
 // read/write functions
-void lcdWrite(u08 c);
+void lcdWrite(u08 chr);
 void lcdWriteString(char *str);
 // void lcdRead(int &x);
 
 // command functions
-void lcdCmd(u08 c);
+void lcdCmd(u08 cmd);
 void lcdClear();
 void lcdHome();
 void lcdRowTwoHome();

@@ -31,22 +31,35 @@ void win();
 void lose();
 
 void gameSetup() {
+	// LCD SETUP
+	lcdInit();
+	lcdCursorStyle(false, false);
+
+	// Turn on pull-up resistors
+	sbi(PORTB, PB4);
+	sbi(PORTC, PC0);
 	// set up audio
 	audioSetup();
 }
 
 void enableButtons() {
 	// turn on PCI
+	sbi(PCMSK0, PCINT4);
+	sbi(PCMSK1, PCINT8);
 	sbi(PCICR, PCIE0);
 	sbi(PCICR, PCIE1);
 	sei();
-	sbi(PCMSK0, PCINT4);
-	sbi(PCMSK1, PCINT8);
 }
 
 void disableButtons() {
 	cbi(PCICR, PCIE0);
 	cbi(PCICR, PCIE1);
+}
+
+void waitForInput() {
+	while( gbi(PINB, PINB4) && gbi(PINC, PINC0) ) {
+		// wait for button press
+	}
 }
 
 bool* newGame() {
@@ -75,7 +88,7 @@ bool* newGame() {
 	playTrack(START_SOUND);
 	
 	// secret code
-	if (gbi(PINB, PINB4) && gbi(PINC, PINC0)) {
+	if ( !gbi(PINB, PINB4) && !gbi(PINC, PINC0) ) {
 		powerUp = 50;
 	}
 	
@@ -91,8 +104,8 @@ void printScore();
 
 void renderFrame() {
 	// create canvas for drawing
-	char	topRow[SCREEN_WIDTH] = 		"                ";
-	char	bottomRow[SCREEN_WIDTH] = 	"                ";
+	char topRow[SCREEN_WIDTH] = "                ";
+	char bottomRow[SCREEN_WIDTH] = "                ";
 	
 	// GAME LOGIC
 	// move user
@@ -438,14 +451,14 @@ void frameDelay() {
 
 ISR(PCINT0_vect) { // move button pressed
 	_delay_ms(2);
-	if (gbi(PINB, PINB4) && !movePressed) {
+	if (!gbi(PINB, PINB4) && !movePressed) {
 		movePressed = true;
 	}
 }
 
 ISR(PCINT1_vect) { // shoot button pressed
 	_delay_ms(2);
-	if (gbi(PINC, PINB0) && !shootPressed) {
+	if (!gbi(PINC, PINC0) && !shootPressed) {
 		shootPressed = true;
 	}
 }

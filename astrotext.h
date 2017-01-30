@@ -4,5 +4,6 @@
 void gameSetup(); // call me during setup phase
 bool* newGame();
 void renderFrame();
+void waitForInput();
 
 #endif //ifndef ASTROTEXT_H

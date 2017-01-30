@@ -6,6 +6,8 @@ MCU = atmega328p
 P_MCU = m328p
 # programmer
 ISP = Arduino
+# port
+PORT = /dev/tty.usbmodem1411
 
 CFLAGS = -g -mmcu=$(MCU) -Os -Werror -mcall-prologues -fdata-sections -ffunction-sections
 LDFLAGS = -Wl,-gc-sections -lm
@@ -22,7 +24,7 @@ all:
 
 # This target first executes the "all" target to compile your code, and then programs the hex file into the ATmega using avrdude.
 program: all
-	avrdude -V -p $(MCU) -P /dev/tty.usbmodemfd111 -b 115200 -c $(ISP) -u -U flash:w:main.hex
+	avrdude -V -p $(MCU) -P $(PORT) -b 115200 -c $(ISP) -u -U flash:w:main.hex
 
 # This target can be called to delete any existing compiled files (binaries), so you know that your next compile is fresh.
 # The dash in front of rm is not passed to the shell, and just tells make to keep running if an error code is returned by rm.

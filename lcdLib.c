@@ -2,6 +2,12 @@
 #include "lcdLib.h"
 
 void lcdInit() {
+	// Configure data direction
+	DATAREG = 0xFF;
+	sbi(CTLREG, RS);
+	sbi(CTLREG, RW);
+	sbi(CTLREG, EN);
+	
 	_delay_ms(50);
 	lcdCmd(0x3F); // function set
 	_delay_us(100);
@@ -12,16 +18,16 @@ void lcdInit() {
 	lcdCmd(0x06);
 }
 
-void lcdWrite(u08 c) {
+void lcdWrite(u08 chr) {
 	// clear control signals
-	sbi(CTLREG, RS);
-	CTLREG &= 0xF9;
+	sbi(CTLPORT, RS);
+	CTLPORT &= 0xF9;
 	// set enable
-	sbi(CTLREG, EN);
-	PORTD = c;
+	sbi(CTLPORT, EN);
+	DATAPORT = chr;
 	_delay_us(1);
-	cbi(CTLREG, EN);
-	cbi(CTLREG, RS);
+	cbi(CTLPORT, EN);
+	cbi(CTLPORT, RS);
 	_delay_us(50);
 }
 
@@ -31,17 +37,17 @@ void lcdWriteString(char *str) {
 	}
 }
 
-void lcdCmd(u08 c) {
+void lcdCmd(u08 cmd) {
 	// clear control signals
 	// dont effect PB3
-	CTLREG &= 0xF8;
+	CTLPORT &= 0xF8;
 	// turn on enable
-	sbi(CTLREG, EN);
-	PORTD = c;
+	sbi(CTLPORT, EN);
+	DATAPORT = cmd;
 	_delay_us(1);
 	// clear control signals
 	// dont effect PB3
-	cbi(CTLREG, EN);
+	cbi(CTLPORT, EN);
 	_delay_us(100);
 }
 
