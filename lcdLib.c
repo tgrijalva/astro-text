@@ -18,11 +18,15 @@ void lcdInit() {
 	lcdCmd(0x06);
 }
 
+void _clearControlSignals() {
+	u08 sigs = (1 << RS) | (1 << RW) | (1 << EN);
+	CTLPORT &= ~sigs;
+}
+
 void lcdWrite(u08 chr) {
-	// clear control signals
+	_clearControlSignals();
+	
 	sbi(CTLPORT, RS);
-	CTLPORT &= 0xF9;
-	// set enable
 	sbi(CTLPORT, EN);
 	DATAPORT = chr;
 	_delay_us(1);
@@ -38,15 +42,12 @@ void lcdWriteString(char *str) {
 }
 
 void lcdCmd(u08 cmd) {
-	// clear control signals
-	// dont effect PB3
-	CTLPORT &= 0xF8;
+	_clearControlSignals();
+	
 	// turn on enable
 	sbi(CTLPORT, EN);
 	DATAPORT = cmd;
 	_delay_us(1);
-	// clear control signals
-	// dont effect PB3
 	cbi(CTLPORT, EN);
 	_delay_us(100);
 }
