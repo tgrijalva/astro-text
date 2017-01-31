@@ -104,8 +104,8 @@ void printScore();
 
 void renderFrame() {
 	// create canvas for drawing
-	char topRow[SCREEN_WIDTH] = "                ";
-	char bottomRow[SCREEN_WIDTH] = "                ";
+	char topRow[SCREEN_WIDTH+1] = "                ";
+	char bottomRow[SCREEN_WIDTH+1] = "                ";
 	
 	// GAME LOGIC
 	// move user
